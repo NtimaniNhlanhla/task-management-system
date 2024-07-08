@@ -12,13 +12,16 @@ export class TasksService {
     private readonly tasksRepository: Repository<Task>,
   ) {}
 
-  async create(createTaskDto: CreateTaskDto): Promise<Task> {
-    const task = this.tasksRepository.create(createTaskDto);
+  async create(userId: number, createTaskDto: CreateTaskDto): Promise<Task> {
+    const task = this.tasksRepository.create({
+      ...createTaskDto,
+      user: { id: userId },
+    });
     return this.tasksRepository.save(task);
   }
 
-  async findAll(): Promise<Task[]> {
-    return this.tasksRepository.find();
+  async findAll(userId: number): Promise<Task[]> {
+    return this.tasksRepository.find({ where: { user: { id: userId } } });
   }
 
   async findOne(id: number): Promise<Task> {
