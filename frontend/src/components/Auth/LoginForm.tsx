@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import { FaSignInAlt } from 'react-icons/fa';
 
 const LoginForm: React.FC = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const dispatch = useDispatch();
@@ -16,7 +16,7 @@ const LoginForm: React.FC = () => {
   const router = useRouter();
 
   const handleLogin = async () => {
-    const result = await dispatch(login({ username, password }));
+    const result = await dispatch(login({ email, password }));
     if (login.fulfilled.match(result)) {
       router.push('/dashboard');
     }
@@ -28,10 +28,10 @@ const LoginForm: React.FC = () => {
         <h2 className="text-2xl font-bold mb-6 text-gray-700">Login</h2>
         <div className="mb-4">
           <input
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-gray-200"
           />
         </div>

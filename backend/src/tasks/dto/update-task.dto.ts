@@ -1,4 +1,10 @@
-import { IsOptional, IsString, IsDate, IsEnum } from 'class-validator';
+import {
+  IsOptional,
+  IsString,
+  IsDate,
+  IsEnum,
+  IsDateString,
+} from 'class-validator';
 
 export class UpdateTaskDto {
   @IsOptional()
@@ -10,12 +16,12 @@ export class UpdateTaskDto {
   description?: string;
 
   @IsOptional()
-  @IsDate()
-  dueDate?: Date;
+  @IsDateString()
+  dueDate?: string;
 
   @IsOptional()
-  @IsString()
-  priority?: string;
+  @IsEnum(['low', 'medium', 'high'])
+  priority: string;
 
   @IsOptional()
   @IsEnum(['pending', 'in-progress', 'completed'])

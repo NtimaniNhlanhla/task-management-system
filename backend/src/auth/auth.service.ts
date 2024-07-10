@@ -1,9 +1,9 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { LoginDto } from './dto/login.dto';
+import { CreateUserDto, LoginUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
+import { User } from 'src/users/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -22,8 +22,8 @@ export class AuthService {
     return this.generateToken(user);
   }
 
-  async login(loginDto: LoginDto) {
-    const user = await this.usersService.findByUsername(loginDto.username);
+  async login(loginDto: LoginUserDto) {
+    const user = await this.usersService.findByEmail(loginDto.email);
     if (!user || !(await bcrypt.compare(loginDto.password, user.password))) {
       throw new UnauthorizedException('Invalid credentials');
     }
@@ -31,10 +31,17 @@ export class AuthService {
     return this.generateToken(user);
   }
 
-  private generateToken(user: any) {
-    const payload = { username: user.username, sub: user.id };
+  private generateToken(userData: User) {
+    const payload = { email: userData.email, sub: userData.id };
+    const user = this.excludePassword(userData);
     return {
       access_token: this.jwtService.sign(payload),
+      user,
     };
+  }
+
+  excludePassword(user: User): Omit<User, 'password'> {
+    const { password, ...userWithoutPassword } = user;
+    return userWithoutPassword;
   }
 }

@@ -7,20 +7,23 @@ import TaskList from '../../components/Task/TaskList';
 import { Task } from '../../types/task';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import Spinner from '../../components/Spinner/Spinner'
 
 const Dashboard: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [loading, setLoading] = useState(true);
   const accessToken = useSelector((state: RootState) => state.auth.token);
   const router = useRouter();
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
-    // Fetch tasks on initial load
     fetchTasks();
   }, []);
 
   const fetchTasks = async () => {
+    setLoading(true);
     try {
-      const response = await axios.get('http://localhost:5000/tasks', {
+      const response = await axios.get(`${API_URL}/tasks`, {
         headers: {
           Authorization: `Bearer ${accessToken}`
         }
@@ -28,6 +31,8 @@ const Dashboard: React.FC = () => {
       setTasks(response.data);
     } catch (error) {
       console.error('Error fetching tasks:', error);
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -47,7 +52,17 @@ const Dashboard: React.FC = () => {
             Add New Task
           </button>
         </div>
-        <TaskList tasks={tasks} /> {/* Pass tasks array as prop */}
+
+        {loading ? (
+          <Spinner /> 
+        ) : (
+          tasks.length === 0 ? (
+            <p className="text-gray-500">No tasks available. Please add a new task.</p>
+          ) : (
+            <TaskList tasks={tasks} setTasks={setTasks} />
+          )
+        )}
+       
       </div>
     </div>
   );

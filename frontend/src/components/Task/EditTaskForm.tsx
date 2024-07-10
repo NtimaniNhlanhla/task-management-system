@@ -1,26 +1,51 @@
-'use client';
+'use client'
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
+import { useRouter, useParams } from 'next/navigation';
 import { RootState } from '../../redux/store';
-import { useRouter } from 'next/navigation';
+import { format } from 'date-fns'; 
 
-const TaskForm: React.FC = () => {
+const EditTaskForm: React.FC = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [dueDate, setDueDate] = useState('');
-  const [priority, setPriority] = useState('low'); // Default priority to 'low'
-  const [status, setStatus] = useState('pending'); // Default status to 'pending'
+  const [priority, setPriority] = useState('low');
+  const [status, setStatus] = useState('pending');
   const accessToken = useSelector((state: RootState) => state.auth.token);
   const router = useRouter();
+  const { id } = useParams();
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+  useEffect(() => {
+    
+    const fetchTask = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/tasks/${id}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
+        });
+        const task = response.data;
+        setTitle(task.title);
+        setDescription(task.description);
+        
+        setDueDate(format(new Date(task.dueDate), 'yyyy-MM-dd'));
+        setPriority(task.priority);
+        setStatus(task.status);
+      } catch (error) {
+        console.error('Failed to fetch task', error);
+      }
+    };
+    fetchTask();
+  }, [id, accessToken]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        `${API_URL}/tasks`,
+      const response = await axios.put(
+        `${API_URL}/tasks/${id}`,
         { title, description, dueDate, priority, status },
         {
           headers: {
@@ -28,10 +53,10 @@ const TaskForm: React.FC = () => {
           }
         }
       );
-      console.log('Task created:', response.data);
-      router.push('/dashboard'); // Redirect back to dashboard after successful creation
+      console.log('Task updated:', response.data);
+      router.push('/dashboard'); 
     } catch (error) {
-      console.error('Failed to create task', error);
+      console.error('Failed to update task', error);
     }
   };
 
@@ -115,7 +140,7 @@ const TaskForm: React.FC = () => {
             type="submit"
             className="bg-black text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline hover:bg-gray-900 transition duration-200"
           >
-            Create Task
+            Update Task
           </button>
         </div>
       </form>
@@ -123,4 +148,4 @@ const TaskForm: React.FC = () => {
   );
 };
 
-export default TaskForm;
+export default EditTaskForm;

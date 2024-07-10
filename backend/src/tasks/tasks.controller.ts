@@ -49,25 +49,4 @@ export class TasksController {
   async remove(@Param('id') id: number) {
     return this.tasksService.delete(id);
   }
-
-  // @UseGuards(JwtAuthGuard)
-  // @Get('dashboard')
-  // async getDashboard(@Request() req) {
-  //   const userId = req.user.id;
-  //   return this.tasksService.getDashboard(userId);
-  // }
-
-  // @UseGuards(JwtAuthGuard)
-  // @Get('search')
-  // async searchTasks(@Request() req, @Query('q') searchQuery: string) {
-  //   const userId = req.user.id;
-  //   return this.tasksService.searchTasks(userId, searchQuery);
-  // }
-
-  // @UseGuards(JwtAuthGuard)
-  // @Get('filter')
-  // async filterTasks(@Request() req, @Query() filters: any) {
-  //   const userId = req.user.id;
-  //   return this.tasksService.filterTasks(userId, filters);
-  // }
 }

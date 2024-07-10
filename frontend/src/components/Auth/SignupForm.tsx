@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import { FaUserPlus } from 'react-icons/fa';
 
 const SignupForm: React.FC = () => {
-  const [username, setUsername] = useState('');
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -17,7 +17,7 @@ const SignupForm: React.FC = () => {
   const router = useRouter();
 
   const handleSignup = async () => {
-    const result = await dispatch(signup({ username, email, password }));
+    const result = await dispatch(signup({ name, email, password }));
     if (signup.fulfilled.match(result)) {
       router.push('/dashboard');
     }
@@ -30,9 +30,9 @@ const SignupForm: React.FC = () => {
         <div className="mb-4">
           <input
             type="text"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-gray-200"
           />
         </div>
