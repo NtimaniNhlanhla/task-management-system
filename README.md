@@ -57,7 +57,7 @@ npm install
 
 ## Database Connection Details
 
-1. Update the `backend/.env` file with your database configurations.
+1. Update the `backend/.env` file with your database configurations. PLEASE NOTE: No need to create database tables, it will be created when you run the register a user. 
 
 ```bash
 # Database configuration
